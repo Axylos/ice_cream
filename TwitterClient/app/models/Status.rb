@@ -17,6 +17,7 @@ class Status < ActiveRecord::Base
       !old_status_ids.include? status.twitter_status_id 
     end
     new_statuses.each(&:save!)
+    
   end
   
   def self.parse_json(twitter_params)
