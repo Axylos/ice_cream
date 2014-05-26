@@ -12,7 +12,11 @@ class Status < ActiveRecord::Base
       new_status = Status.new(params)
       return_statuses << new_status
     end
-    return_statuses
+    old_status_ids = Status.pluck(:twitter_status_id)
+    new_statuses = return_statuses.keep_if do |status| 
+      !old_status_ids.include? status.twitter_status_id 
+    end
+    new_statuses.each(&:save!)
   end
   
   def self.parse_json(twitter_params)
