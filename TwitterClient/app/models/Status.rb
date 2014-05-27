@@ -25,12 +25,10 @@ class Status < ActiveRecord::Base
   end
   
   def self.get_params(twitter_params)
-    params = {}
-    params[:body] = twitter_params["text"]
-    params[:twitter_status_id] = twitter_params["id_str"]
-    params[:twitter_user_id] = twitter_params["user"]["id_str"]
-    
-    params
+    params = { body: twitter_params["text"],
+               twitter_status_id: twitter_params["id_str"],
+               twitter_user_id: twitter_params["id_str"] 
+             }
   end
   
   def self.post(body)
