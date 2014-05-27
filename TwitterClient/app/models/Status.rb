@@ -18,12 +18,13 @@ class Status < ActiveRecord::Base
   
   def self.prettify_json(statuses)
     JSON.parse(statuses).map do |status|
-      params = self.parse_json(status)
+      params = self.get_params(status)
       new_status = Status.new(params)
     end
+
   end
   
-  def self.parse_json(twitter_params)
+  def self.get_params(twitter_params)
     params = {}
     params[:body] = twitter_params["text"]
     params[:twitter_status_id] = twitter_params["id_str"]
@@ -32,9 +33,11 @@ class Status < ActiveRecord::Base
     params
   end
   
-  def self.post(body=nil)
-    new_post = TwitterSession.prompt
-    self.prettify_json(new_post)
+  def self.post(body)
+    new_post = TwitterSession.post("statuses/update", { status: body} )
+    parsed_post = JSON.parse new_post
+    params = self.get_params(parsed_post)
+    Status.create!(params)
   end
   
   def internet_connection?
